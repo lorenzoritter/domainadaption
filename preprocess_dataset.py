@@ -47,7 +47,8 @@ class MovieHandler( xml.sax.ContentHandler ):
          print "reviever_location:", self.reviever_location
       elif self.CurrentData == "review_text":
          print "review_text:", self.review_text
-      self.CurrentData = ""
+      else:
+         self.CurrentData = ""
 
    # Call when a character is read
    def characters(self, content):
