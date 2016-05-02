@@ -1,30 +1,12 @@
 from bs4 import BeautifulSoup
 import csv
 import os
-#import numpy as np
 
 categories = ['books', 'dvd', 'electronics', 'kitchen_&_housewares']
 
 filepath = '/home/lorenzo/PycharmProjects/domainadaption/sorted_data_acl/'
 
 include_title = True
-
-#data = open('/home/lorenzo/PycharmProjects/domainadaption/sorted_data_acl/books/positive.review').read()
-
-#soup = BeautifulSoup(data, 'html.parser')
-
-#reviews = []
-#ratings = []
-'''
-if os.path.exists('reviews.csv'):
-    os.remove('reviews.csv')
-
-with open('reviews.csv', 'wb') as reviewcsv:
-    writer = csv.writer(reviewcsv, delimiter=',')
-    for review in soup.find_all('review'):
-        writer.writerow([review.review_text.string.strip().replace('\n',' '), review.rating.string.strip().replace('\n',' ')])
-        print repr(review.review_text.string.strip().replace('\n',' '))
-'''
 
 for category in categories:
     for sentiment in ['positive', 'negative']:
@@ -56,14 +38,17 @@ for category in categories:
 
                 for review in readable_data.find_all('review'):
                     # write review to file
+                    review_text = review.review_text.string.strip().replace('\n\n',' ').replace('\n',' ')
+                    review_text = review_text.encode('ascii', 'ignore')
+
                     if include_title:
-                        review_text = [review.title.string.strip().replace('\n\n',' ').replace('\n',' ').replace('\u2019',' ') +
-                                  '. ' +
-                                  review.review_text.string.strip().replace('\n\n',' ').replace('\n',' ').replace('\u2019',' ')]
+                        review_title = review.review_text.string.strip().replace('\n\n',' ').replace('\n',' ')
+                        review_title = review_title.encode('ascii', 'ignore')
+                        reviewswriter.writerow([review_text + '. ' + review_title])
                     else:
-                        review_text = [review.review_text.string.strip().replace('\n\n',' ').replace('\n',' ').replace('\u2019',' ')]
-                    reviewswriter.writerow(review_text)
+                        reviewswriter.writerow([review_text])
+
 
                     # write rating to file
-                    rating = [review.rating.string.strip().replace('\n\n',' ').replace('\n','')]
-                    ratingswriter.writerow(rating)
+                    rating = review.rating.string.strip().replace('\n\n',' ').replace('\n','')
+                    ratingswriter.writerow([rating])
