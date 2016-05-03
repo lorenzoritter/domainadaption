@@ -1,6 +1,18 @@
+#!/usr/bin/env python
+
+'''preprocess_unlabeled_data.py
+
+file description here
+'''
+
+__author__ = "Lorenzo von Ritter"
+__date__ = 2016 - 05 - 02
+
 from bs4 import BeautifulSoup
 import csv
 import os
+import helper
+
 
 categories = ['books', 'dvd', 'electronics', 'kitchen_&_housewares']
 
@@ -26,10 +38,9 @@ for category in categories:
         if os.path.exists(reviewfile):
             os.remove(reviewfile)
 
-
         # preprocess data and write to csv files
         with open(reviewfile, 'wb') as reviewcsv:
-            reviewswriter = csv.writer(reviewcsv, delimiter='.')
+            reviewswriter = csv.writer(reviewcsv, quoting=csv.QUOTE_NONE, delimiter='|', escapechar='\\')
 
             reviewcount = 0
 
@@ -39,14 +50,15 @@ for category in categories:
 
                 # write review to file
                 try:
-                    review_text = review.review_text.string.strip().replace('\n\n', ' ').replace('\n', ' ')
-                    review_text = review_text.encode('utf8', 'ignore')
+                    review_text = review.review_text.string
+                    review_text = helper.clean(review_text)
 
                     if include_title:
-                        review_title = review.review_text.string.strip().replace('\n\n', ' ').replace('\n', ' ')
-                        review_title = review_title.encode('utf8', 'ignore')
-                        reviewswriter.writerow([review_text + '. ' + review_title])
+                        review_title = review.title.string
+                        review_title = helper.clean(review_title)
+                        reviewswriter.writerow([review_title + '. ' + review_text])
                     else:
                         reviewswriter.writerow([review_text])
                 except:
-                    print 'Not able to read review ' + str(reviewcount)
+                    print '\tNot able to read review ' + str(reviewcount) + ' with ID ' + \
+                          review.unique_id.string.strip()[:40]

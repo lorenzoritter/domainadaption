@@ -1,6 +1,18 @@
+#!/usr/bin/env python
+
+'''preprocess_dataset.py
+
+file description here
+'''
+
+__author__ = "Lorenzo von Ritter"
+__date__ = 2016 - 04 - 29
+
 from bs4 import BeautifulSoup
 import csv
 import os
+import helper
+
 
 categories = ['books', 'dvd', 'electronics', 'kitchen_&_housewares']
 
@@ -9,6 +21,7 @@ filepath = '/home/lorenzo/PycharmProjects/domainadaption/sorted_data_acl/'
 include_title = True
 
 for category in categories:
+    print 'category: ' + category
     for sentiment in ['positive', 'negative']:
         # read raw data and make it readable using BeautifulSoup
         sourcefile = filepath + category + '/' + sentiment + '.review'
@@ -31,24 +44,33 @@ for category in categories:
 
         # preprocess data and write to csv files
         with open(reviewfile, 'wb') as reviewcsv:
-            reviewswriter = csv.writer(reviewcsv, delimiter='.')
+            reviewswriter = csv.writer(reviewcsv, quoting=csv.QUOTE_NONE, delimiter='|', escapechar='\\')
 
             with open(ratingfile, 'wb') as ratingcsv:
                 ratingswriter = csv.writer(ratingcsv)
 
+                reviewcount = 0
+
                 for review in readable_data.find_all('review'):
+
+                    reviewcount += 1
+
                     # write review to file
-                    review_text = review.review_text.string.strip().replace('\n\n',' ').replace('\n',' ')
-                    review_text = review_text.encode('utf8', 'ignore')
+                    try:
+                        review_text = review.review_text.string
+                        review_text = helper.clean(review_text)
 
-                    if include_title:
-                        review_title = review.review_text.string.strip().replace('\n\n',' ').replace('\n',' ')
-                        review_title = review_title.encode('utf8', 'ignore')
-                        reviewswriter.writerow([review_text + '. ' + review_title])
-                    else:
-                        reviewswriter.writerow([review_text])
+                        if include_title:
+                            review_title = review.review_text.string
+                            review_title = helper.clean(review_title)
+                            reviewswriter.writerow([review_text + '. ' + review_title])
+                        else:
+                            reviewswriter.writerow([review_text])
 
-
-                    # write rating to file
-                    rating = review.rating.string.strip().replace('\n\n',' ').replace('\n','')
-                    ratingswriter.writerow([rating])
+                        # write rating to file
+                        rating = review.rating.string
+                        rating = helper.clean(rating)
+                        ratingswriter.writerow([rating])
+                    except:
+                        print '\tNot able to read review ' + str(reviewcount) + ' with ID ' + \
+                              review.unique_id.string.strip()[:40]
