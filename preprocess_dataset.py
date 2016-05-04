@@ -34,11 +34,11 @@ for category in categories:
             os.makedirs(targetpath)
 
         # remove previous results
-        reviewfile = targetpath + sentiment + '_reviews.csv'
+        reviewfile = targetpath + sentiment + '_reviews.txt'
         if os.path.exists(reviewfile):
             os.remove(reviewfile)
 
-        ratingfile = targetpath + sentiment + '_ratings.csv'
+        ratingfile = targetpath + sentiment + '_ratings.txt'
         if os.path.exists(ratingfile):
             os.remove(ratingfile)
 

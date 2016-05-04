@@ -34,7 +34,7 @@ for category in categories:
             os.makedirs(targetpath)
 
         # remove previous results
-        reviewfile = targetpath + sentiment + '_reviews.csv'
+        reviewfile = targetpath + sentiment + '_reviews.txt'
         if os.path.exists(reviewfile):
             os.remove(reviewfile)
 
