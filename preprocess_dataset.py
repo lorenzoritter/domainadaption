@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 import csv
 import os
 import helper
+import review_tokenizer
 
 
 categories = ['books', 'dvd', 'electronics', 'kitchen_&_housewares']
@@ -58,12 +59,16 @@ for category in categories:
                     # write review to file
                     try:
                         review_text = review.review_text.string
-                        review_text = helper.clean(review_text)
+                        review_text = helper.clean(review_text) # remove newlines, quotation marks, unicode
+                        review_text = review_tokenizer.cleanOnereview(review_text)
 
                         if include_title:
                             review_title = review.review_text.string
                             review_title = helper.clean(review_title)
+                            review_title = review_tokenizer.cleanOnereview(revie_title)
+
                             reviewswriter.writerow([review_text + '. ' + review_title])
+
                         else:
                             reviewswriter.writerow([review_text])
 
