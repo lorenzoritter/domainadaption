@@ -34,6 +34,6 @@ def cleanOnereview(onereview):
 
     return sentlist_no_punctuation
 
-onereview = 'hello world! Yeep! I *like* the movie.'
-s = cleanOnereview(onereview)
-print s
+#onereview = 'hello world! Yeep! I *like* the movie.'
+#s = cleanOnereview(onereview)
+#print s

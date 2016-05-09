@@ -20,7 +20,7 @@ def clean(input):
     input = input.replace('&quot;', '').replace('"','')
 
     # remove unicode
-    input = input.encode('utf8', 'ignore')
+    input = input.encode('ascii', 'ignore')
 
     # replace list by enumeration
     input = input.replace(' *',', ')
