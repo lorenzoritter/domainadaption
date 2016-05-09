@@ -3,7 +3,8 @@
 CATEGORIES="books
 dvd
 electronics
-kitchen_&_housewares"
+kitchen_&_housewares
+all"
 
 SENTIMENTS="positive
 negative"
@@ -22,19 +23,15 @@ X_MAX=10
 
 for CATEGORY in $CATEGORIES
 do
-    for SENTIMENT in $SENTIMENTS
-    do
-        REVIEWFILE=$DATAPATH$CATEGORY"/"$SENTIMENT"_reviews_forEmbedding.txt"
-        VOCABFILE=$DATAPATH$CATEGORY"/"$SENTIMENT"_reviews.vocab"
-        COOCCUREFILE=$DATAPATH$CATEGORY"/"$SENTIMENT"_reviews.cooccur"
-        COOCCUREFILE_SHUF=$DATAPATH$CATEGORY"/"$SENTIMENT"_reviews.cooccur.shuf"
-        SAVEFILE=$DATAPATH$CATEGORY"/"$SENTIMENT"_reviews.vectors"
+    REVIEWFILE=$DATAPATH$CATEGORY"/reviews_forEmbedding.txt"
+    VOCABFILE=$DATAPATH$CATEGORY"/reviews.vocab"
+    COOCCUREFILE=$DATAPATH$CATEGORY"/reviews.cooccur"
+    COOCCUREFILE_SHUF=$DATAPATH$CATEGORY"/reviews.cooccur.shuf"
+    SAVEFILE=$DATAPATH$CATEGORY"/reviews.vectors"
 
-
-        echo $REVIEWFILE
-        glove/build/vocab_count -min-count $VOCAB_MIN_COUNT -verbose $VERBOSE < $REVIEWFILE > $VOCABFILE
-        glove/build/cooccur -memory $MEMORY -vocab-file $VOCABFILE -verbose $VERBOSE < $REVIEWFILE > $COOCCUREFILE
-        glove/build/shuffle -memory $MEMORY -verbose $VERBOSE < $COOCCUREFILE > $COOCCUREFILE_SHUF
-        glove/build/glove -save-file $SAVEFILE -threads $NUM_THREADS -input-file $COOCCUREFILE_SHUF -x-max $X_MAX -iter $MAX_ITER -vector-size $VECTOR_SIZE -binary $BINARY -vocab-file $VOCABFILE -verbose $VERBOSE
-    done
+    echo $REVIEWFILE
+    glove/build/vocab_count -min-count $VOCAB_MIN_COUNT -verbose $VERBOSE < $REVIEWFILE > $VOCABFILE
+    glove/build/cooccur -memory $MEMORY -vocab-file $VOCABFILE -verbose $VERBOSE < $REVIEWFILE > $COOCCUREFILE
+    glove/build/shuffle -memory $MEMORY -verbose $VERBOSE < $COOCCUREFILE > $COOCCUREFILE_SHUF
+    glove/build/glove -save-file $SAVEFILE -threads $NUM_THREADS -input-file $COOCCUREFILE_SHUF -x-max $X_MAX -iter $MAX_ITER -vector-size $VECTOR_SIZE -binary $BINARY -vocab-file $VOCABFILE -verbose $VERBOSE
 done
