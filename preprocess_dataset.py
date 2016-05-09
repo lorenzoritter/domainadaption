@@ -65,7 +65,7 @@ for category in categories:
                         if include_title:
                             review_title = review.review_text.string
                             review_title = helper.clean(review_title)
-                            review_title = review_tokenizer.cleanOnereview(revie_title)
+                            review_title = review_tokenizer.cleanOnereview(review_title)
 
                             reviewswriter.writerow([review_text + '. ' + review_title])
 
