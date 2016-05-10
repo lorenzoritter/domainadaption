@@ -19,11 +19,9 @@ Notes:
 GPU command:
 THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python imdb_lstm.py
 '''
-from __future__ import print_function
 
 __author__ = "Lorenzo von Ritter"
 __date__ = "2016-05-10"
-
 
 
 import numpy as np
@@ -61,20 +59,21 @@ class TrainHistory(Callback):
 #max_features = 20000
 #maxlen = 200  # cut texts after this number of words (among top max_features most common words)
 batch_size = 32
-nb_epochs = 2
+nb_epochs = 100
 
 starttime = datetime.now()
 
-categories = ['books', 'dvd', 'electronics', 'kitchen_&_housewares', 'all']
+#categories = ['books', 'dvd', 'electronics', 'kitchen_&_housewares', 'all']
+categories = ['books']
 sentiments = ['positive', 'negative']
 
 filepath = '/home/lorenzo/PycharmProjects/domainadaption/sorted_data_acl/'
 
 
 for category in categories:
-    print('category: ' + category)
+    print 'category: %s' %category
 
-    print('Loading data...')
+    print 'Loading data...'
     reviews_positive = np.load(filepath + category + '/reviews_positive.npy')
     reviews_negative = np.load(filepath + category + '/reviews_negative.npy')
     #ratings_positive = np.load(filepath + category + '/ratings_positive.npy')
@@ -98,24 +97,24 @@ for category in categories:
     assert X_train.shape[0] == y_train.shape[0]
     assert X_test.shape[0] == y_test.shape[0]
 
-    print(len(X_train), 'train sequences')
-    print(len(X_test), 'test sequences')
+    print '%d train sequences' %len(X_train)
+    print '%d test sequences' %len(X_test)
 
     maxlen = X_train.shape[1]
     embedding_dim = X_train.shape[2]
 
-    print('maxlen ', maxlen)
-    print('embedding_dim', embedding_dim)
+    print 'maxlen: %d' %maxlen
+    print 'embedding_dim: %d' %embedding_dim
 
     '''
-    print('Pad sequences (samples x time)')
+    print 'Pad sequences (samples x time)'
     X_train = sequence.pad_sequences(X_train, maxlen=maxlen)
     X_test = sequence.pad_sequences(X_test, maxlen=maxlen)
-    print('X_train shape:', X_train.shape)
-    print('X_test shape:', X_test.shape)
+    print 'X_train shape: %s' %X_train.shape
+    print 'X_test shape: %s' %X_test.shape
     '''
 
-    print('Builing model...')
+    print 'Builing model...'
     model = Sequential()
     # model.add(Embedding(max_features, 128, input_length=maxlen, dropout=0.5))
     # model.add(Embedding(max_features, 128, input_length=maxlen))
@@ -130,7 +129,7 @@ for category in categories:
     model.summary()
 
     # try using different optimizers and different optimizer configs
-    print('Compiling model...')
+    print 'Compiling model...'
     model.compile(loss='binary_crossentropy',
                   optimizer='adam',  # TODO: Use rmsprop
                   metrics=['accuracy'])
@@ -139,24 +138,24 @@ for category in categories:
     history = TrainHistory()
     early_stopping = EarlyStopping(monitor='val_acc', mode='max', verbose=1, patience=10)
 
-    print('Training model...')
+    print 'Training model...'
     history2 = model.fit(X_train, y_train, batch_size=batch_size, nb_epoch=nb_epochs,
               validation_data=(X_test, y_test), callbacks=[history, early_stopping])
 
     score, acc = model.evaluate(X_test, y_test,
                                 batch_size=batch_size)
-    print('Test score:', score)
-    print('Test accuracy:', acc)
+    print 'Test score: %f' %score
+    print 'Test accuracy: %f' %acc
 
-    print('Saving history...')
+    print 'Saving history...'
     historyfile = pd.DataFrame(data=np.transpose([history.loss, history.acc, history.val_loss, history.val_acc]),
                                columns=['loss', 'acc', 'val_loss', 'val_acc'])
     historyfile.to_csv(filepath + category + '/keras_history.csv', index=False)
 
-    print('Saving model...')
+    print 'Saving model...'
     json_string = model.to_json()
     open(filepath + category + '/keras_model_architecture.json', 'w').write(json_string)
     model.save_weights(filepath + category + '/keras_model_weights.h5', overwrite=True)
 
     endtime = datetime.now()
-    print('Runtime: ', (endtime - starttime))
+    print 'Runtime: %s' %(endtime - starttime)
