@@ -6,7 +6,7 @@ file description here
 '''
 
 __author__ = "Lorenzo von Ritter"
-__date__ = 2016 - 05 - 9
+__date__ = "2016 - 05 - 09"
 
 from bs4 import BeautifulSoup
 import csv

@@ -6,7 +6,7 @@ file description here
 '''
 
 __author__ = "Lorenzo von Ritter"
-__date__ = 2016 - 05 - 03
+__date__ = "2016 - 05 - 03"
 
 
 def clean(input):
