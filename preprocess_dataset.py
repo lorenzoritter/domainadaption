@@ -27,7 +27,7 @@ for category in categories:
         # read raw data and make it readable using BeautifulSoup
         sourcefile = filepath + category + '/' + sentiment + '.review'
         data = open(sourcefile).read()
-        readable_data = BeautifulSoup(data, 'html.parser')
+        readable_data = BeautifulSoup(data, 'lxml')
 
         # set up target files
         targetpath = filepath + category + '/'
@@ -51,6 +51,7 @@ for category in categories:
                 ratingswriter = csv.writer(ratingcsv)
 
                 reviewcount = 0
+                successcount = 0
 
                 for review in readable_data.find_all('review'):
 
@@ -80,6 +81,9 @@ for category in categories:
                         rating = helper.clean(rating)
                         ratingswriter.writerow([rating])
 
+                        successcount += 1
+
                     except:
                         print '\tNot able to read review ' + str(reviewcount) + ' with ID ' + \
                               review.unique_id.string.strip()[:40]
+        print 'read %d reviews, saved %d successfully.' %(reviewcount, successcount)
