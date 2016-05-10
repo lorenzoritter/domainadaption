@@ -2,7 +2,8 @@
 
 ### 0. Available data
 Amazon product reviews in four categories: books, dvd, electronics, and kitchen & housewares.<br>
-1000 positive, 1000 negative and various unlabeled reviews per category.
+1000 positive, 1000 negative and various unlabeled reviews per category.<br>
+Data is available [here](https://www.cs.jhu.edu/~mdredze/datasets/sentiment/index2.html).
 ```
 ├── sorted_data_acl/
     ├── books/
@@ -21,7 +22,6 @@ Amazon product reviews in four categories: books, dvd, electronics, and kitchen 
         ├── negative.review
         ├── positive.review
         ├── unlabeled.review
-
 ```
 
 ### 1. Create Embeddings
