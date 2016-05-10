@@ -61,14 +61,14 @@ for category in categories:
                     try:
                         review_text = review.review_text.string
                         review_text = helper.clean(review_text) # remove newlines, quotation marks, unicode
-                        review_text = review_tokenizer.cleanOnereview(review_text) # tokenize into a list of sentences
+                        review_text = review_tokenizer.cleanOnereview(review_text, removesinglewords=False) # tokenize into a list of sentences
                         review_text = " ".join(review_text) # join with whitespaces
                         # TODO: evaluate sentiment classification performance when using <eos> tag
 
                         if include_title:
                             review_title = review.title.string
                             review_title = helper.clean(review_title)
-                            review_title = review_tokenizer.cleanOnereview(review_title)
+                            review_title = review_tokenizer.cleanOnereview(review_title, removesinglewords=False)
                             review_title = " ".join(review_title)
 
                             reviewswriter.writerow([review_text[:] + ' ' + review_title[:]])
@@ -86,4 +86,4 @@ for category in categories:
                     except:
                         print '\tNot able to read review ' + str(reviewcount) + ' with ID ' + \
                               review.unique_id.string.strip()[:40]
-        print 'read %d reviews, saved %d successfully.' %(reviewcount, successcount)
+        print '\tread %d reviews, saved %d successfully.' %(reviewcount, successcount)
