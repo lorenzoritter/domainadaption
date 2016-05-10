@@ -6,4 +6,5 @@ Keras
 lxml
 numpy
 pandas
+sklearn
 Theano
