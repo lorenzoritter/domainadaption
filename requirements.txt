@@ -1,0 +1,9 @@
+beautifulsoup4
+Cython
+gensim
+h5py
+Keras
+lxml
+numpy
+pandas
+Theano
