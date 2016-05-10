@@ -20,7 +20,7 @@ max_length = 200
 embedding_dim = 50
 
 def read_input(filename, w2v_dict, max_length=200, embedding_dim=200):
-    print 'Embedding %s...' %filename
+    print '\tEmbedding %s...' %filename
     embedded_file = []
     #for review in open(os.path.join(dirname, fname)): # could combine the following two lines
     with open(filename, 'r') as infile:
