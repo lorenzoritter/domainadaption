@@ -139,9 +139,13 @@ for category in categories:
     early_stopping = EarlyStopping(monitor='val_acc', mode='max', verbose=1, patience=10)
 
     print 'Training model...'
-    history2 = model.fit(X_train, y_train, batch_size=batch_size, nb_epoch=nb_epochs,
-              validation_data=(X_test, y_test), callbacks=[history])
+    try:
+        history2 = model.fit(X_train, y_train, batch_size=batch_size, nb_epoch=nb_epochs,
+                             validation_data=(X_test, y_test), callbacks=[history])
+    except KeyboardInterrupt:
+        print '\nTraining interrupted by user. Continuing with model evaluation...'
 
+    print 'Evaluating model...'
     score, acc = model.evaluate(X_test, y_test,
                                 batch_size=batch_size)
     print 'Test score: %f' %score
