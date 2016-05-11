@@ -50,3 +50,7 @@ Data is available [here](https://www.cs.jhu.edu/~mdredze/datasets/sentiment/inde
 
 ##### 2.3. Run *merge_embedded_reviews.py*<br>
   This will merge the embedded reviews from all four categories into the all/ folder.
+
+### 3. Classify Sentiments
+##### 3.1. Run *sentiment_classification.py*<br>
+  This will train a neural network to classify the sentiments in each category.
