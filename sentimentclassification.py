@@ -40,6 +40,8 @@ from sklearn.cross_validation import train_test_split
 
 from datetime import datetime
 
+import variables
+
 
 # class to store the loss at each end of each epoch
 class TrainHistory(Callback):
@@ -58,9 +60,12 @@ class TrainHistory(Callback):
 
 #max_features = 20000
 #maxlen = 200  # cut texts after this number of words (among top max_features most common words)
-batch_size = 32
-nb_epochs = 1000
-lstm_output = 50
+nb_epochs = variables.NB_EPOCHS
+batch_size = variables.BATCH_SIZE
+lstm_output = variables.LSTM_OUTPUT_SIZE
+lstm_dropout_w = variables.LSTM_DROPOUT_W
+lstm_dropout_u = variables.LSTM_DROPOUT_U
+dropout = variables.DROPOUT
 
 starttime = datetime.now()
 
@@ -119,10 +124,10 @@ for category in categories:
 
     print 'Builing model...'
     model = Sequential()
-    # model.add(LSTM(128, dropout_W=0.5, dropout_U=0.1))  # try using a GRU instead, for fun
+    # model.add(LSTM(128, dropout_W=lstm_dropout_w, dropout_U=lstm_dropout_u))  # try using a GRU instead, for fun
     # model.add(LSTM(lstm_output, input_shape=(maxlen, embedding_dim,), dropout_W=0.5, dropout_U=0.1))
-    model.add(LSTM(lstm_output, input_shape=(maxlen, embedding_dim,)))  # try using a GRU instead, for fun
-    #model.add(Dropout(0.5))
+    model.add(LSTM(variables, input_shape=(maxlen, embedding_dim,)))  # try using a GRU instead, for fun
+    model.add(Dropout(dropout))
     model.add(Dense(1))
     model.add(Activation('sigmoid'))
 
@@ -140,14 +145,12 @@ for category in categories:
 
     print 'Training model...'
     try:
-        history2 = model.fit(X_train, y_train, batch_size=batch_size, nb_epoch=nb_epochs,
-                             validation_data=(X_test, y_test), callbacks=[history])
+        model.fit(X_train, y_train, batch_size=batch_size, nb_epoch=nb_epochs, validation_data=(X_test, y_test))
     except KeyboardInterrupt:
         print '\nTraining interrupted by user. Continuing with model evaluation...'
 
     print 'Evaluating model...'
-    score, acc = model.evaluate(X_test, y_test,
-                                batch_size=batch_size)
+    score, acc = model.evaluate(X_test, y_test, batch_size=batch_size)
     print 'Test score: %f' %score
     print 'Test accuracy: %f' %acc
 
