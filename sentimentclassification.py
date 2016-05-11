@@ -59,7 +59,8 @@ class TrainHistory(Callback):
 #max_features = 20000
 #maxlen = 200  # cut texts after this number of words (among top max_features most common words)
 batch_size = 32
-nb_epochs = 100
+nb_epochs = 1000
+lstm_output = 50
 
 starttime = datetime.now()
 
@@ -84,6 +85,8 @@ for category in categories:
     reviews = np.append(reviews_positive, reviews_negative, axis=0)
     ratings = np.append(ratings_positive, ratings_negative, axis=0)
 
+    ratings = ratings.reshape(len(reviews),1)
+
     del reviews_positive, reviews_negative, ratings_positive, ratings_negative
 
     seed = 1234
@@ -97,8 +100,8 @@ for category in categories:
     assert X_train.shape[0] == y_train.shape[0]
     assert X_test.shape[0] == y_test.shape[0]
 
-    print '%d train sequences' %len(X_train)
-    print '%d test sequences' %len(X_test)
+    print '%d train sequences' %X_train.shape[0]
+    print '%d test sequences' %X_test.shape[0]
 
     maxlen = X_train.shape[1]
     embedding_dim = X_train.shape[2]
@@ -116,13 +119,10 @@ for category in categories:
 
     print 'Builing model...'
     model = Sequential()
-    # model.add(Embedding(max_features, 128, input_length=maxlen, dropout=0.5))
-    # model.add(Embedding(max_features, 128, input_length=maxlen))
     # model.add(LSTM(128, dropout_W=0.5, dropout_U=0.1))  # try using a GRU instead, for fun
-    model.add(LSTM(200, input_shape=(maxlen, embedding_dim,), dropout_W=0.5,
-                   dropout_U=0.1))  # try using a GRU instead, for fun
-    # model.add(LSTM(128))  # try using a GRU instead, for fun
-    model.add(Dropout(0.5))
+    # model.add(LSTM(lstm_output, input_shape=(maxlen, embedding_dim,), dropout_W=0.5, dropout_U=0.1))
+    model.add(LSTM(lstm_output, input_shape=(maxlen, embedding_dim,)))  # try using a GRU instead, for fun
+    #model.add(Dropout(0.5))
     model.add(Dense(1))
     model.add(Activation('sigmoid'))
 
@@ -131,7 +131,7 @@ for category in categories:
     # try using different optimizers and different optimizer configs
     print 'Compiling model...'
     model.compile(loss='binary_crossentropy',
-                  optimizer='adam',  # TODO: Use rmsprop
+                  optimizer='rmsprop',  # TODO: Use rmsprop
                   metrics=['accuracy'])
 
     # initialize callbacks
@@ -140,7 +140,7 @@ for category in categories:
 
     print 'Training model...'
     history2 = model.fit(X_train, y_train, batch_size=batch_size, nb_epoch=nb_epochs,
-              validation_data=(X_test, y_test), callbacks=[history, early_stopping])
+              validation_data=(X_test, y_test), callbacks=[history])
 
     score, acc = model.evaluate(X_test, y_test,
                                 batch_size=batch_size)

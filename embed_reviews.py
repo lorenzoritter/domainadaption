@@ -10,16 +10,17 @@ __date__ = "2016-05-09"
 
 import numpy as np
 import cPickle as pkl
+import variables
 
 categories = ['books', 'dvd', 'electronics', 'kitchen_&_housewares']
 sentiments = ['positive', 'negative']
 
 filepath = '/home/lorenzo/PycharmProjects/domainadaption/sorted_data_acl/'
 
-max_length = 200
-embedding_dim = 50
+max_length = variables.MAX_LENGTH
+embedding_dim = variables.EMBEDDING_DIM
 
-def read_input(filename, w2v_dict, max_length=200, embedding_dim=200):
+def read_input(filename, w2v_dict, max_length, embedding_dim):
     print '\tEmbedding %s...' %filename
     embedded_file = []
     #for review in open(os.path.join(dirname, fname)): # could combine the following two lines

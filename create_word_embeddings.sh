@@ -9,12 +9,14 @@ all"
 SENTIMENTS="positive
 negative"
 
-DATAPATH="sorted_data_acl/"
+DATAPATH="/home/lorenzo/PycharmProjects/domainadaption/sorted_data_acl/"
+
+python variables.py
 
 VERBOSE=2
 MEMORY=4.0
 VOCAB_MIN_COUNT=5
-VECTOR_SIZE=50
+VECTOR_SIZE=$EMBEDDING_DIM # TODO: IMPORTING GLOBAL VARIABLE DOES NOT WORK
 MAX_ITER=10
 WINDOW_SIZE=10
 BINARY=2
