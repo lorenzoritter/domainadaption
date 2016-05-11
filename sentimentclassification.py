@@ -66,6 +66,7 @@ lstm_output = variables.LSTM_OUTPUT_SIZE
 lstm_dropout_w = variables.LSTM_DROPOUT_W
 lstm_dropout_u = variables.LSTM_DROPOUT_U
 dropout = variables.DROPOUT
+patience = variables.PATIENCE
 
 starttime = datetime.now()
 
@@ -126,7 +127,7 @@ for category in categories:
     model = Sequential()
     # model.add(LSTM(128, dropout_W=lstm_dropout_w, dropout_U=lstm_dropout_u))  # try using a GRU instead, for fun
     # model.add(LSTM(lstm_output, input_shape=(maxlen, embedding_dim,), dropout_W=0.5, dropout_U=0.1))
-    model.add(LSTM(variables, input_shape=(maxlen, embedding_dim,)))  # try using a GRU instead, for fun
+    model.add(LSTM(lstm_output, input_shape=(maxlen, embedding_dim,)))  # try using a GRU instead, for fun
     model.add(Dropout(dropout))
     model.add(Dense(1))
     model.add(Activation('sigmoid'))
@@ -141,11 +142,12 @@ for category in categories:
 
     # initialize callbacks
     history = TrainHistory()
-    early_stopping = EarlyStopping(monitor='val_acc', mode='max', verbose=1, patience=10)
+    early_stopping = EarlyStopping(monitor='val_acc', mode='max', verbose=1, patience=patience)
 
     print 'Training model...'
     try:
-        model.fit(X_train, y_train, batch_size=batch_size, nb_epoch=nb_epochs, validation_data=(X_test, y_test))
+        model.fit(X_train, y_train, batch_size=batch_size, nb_epoch=nb_epochs,
+                  validation_data=(X_test, y_test), callbacks=[history])
     except KeyboardInterrupt:
         print '\nTraining interrupted by user. Continuing with model evaluation...'
 

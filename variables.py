@@ -18,6 +18,7 @@ LSTM_OUTPUT_SIZE = 50   # number of output neurons of the LSTM
 LSTM_DROPOUT_W = 0.5    # dropout fraction at the input nodes of the LSTM
 LSTM_DROPOUT_U = 0.1    # dropout fraction at the recurrent connections of the LSTM
 DROPOUT = 0.5           # dropout fraction at the dropout layer
+PATIENCE = 20           # patience for early stopping: number of worse epochs before stopping training
 
 os.environ['EMBEDDING_DIM'] = str(EMBEDDING_DIM)
 os.environ['MAX_LENGTH'] = str(MAX_LENGTH)
