@@ -70,9 +70,9 @@ patience = variables.PATIENCE
 
 starttime = datetime.now()
 
-#categories = ['books', 'dvd', 'electronics', 'kitchen_&_housewares', 'all']
-categories = ['books']
-sentiments = ['positive', 'negative']
+categories = ['books', 'dvd', 'electronics', 'kitchen_&_housewares', 'all']
+#categories = ['books']
+#sentiments = ['positive', 'negative']
 
 filepath = '/home/lorenzo/PycharmProjects/domainadaption/sorted_data_acl/'
 
@@ -125,19 +125,18 @@ for category in categories:
 
     print 'Builing model...'
     model = Sequential()
-    # model.add(LSTM(128, dropout_W=lstm_dropout_w, dropout_U=lstm_dropout_u))  # try using a GRU instead, for fun
-    # model.add(LSTM(lstm_output, input_shape=(maxlen, embedding_dim,), dropout_W=0.5, dropout_U=0.1))
-    model.add(LSTM(lstm_output, input_shape=(maxlen, embedding_dim,)))  # try using a GRU instead, for fun
+    model.add(LSTM(lstm_output, input_shape=(maxlen, embedding_dim,), dropout_W=lstm_dropout_w, dropout_U=lstm_dropout_u))
+    #model.add(LSTM(lstm_output, input_shape=(maxlen, embedding_dim,)))
     model.add(Dropout(dropout))
     model.add(Dense(1))
-    model.add(Activation('sigmoid'))
+    model.add(Activation('sigmoid')) # relu is worse, softmax does not work at all
 
     model.summary()
 
     # try using different optimizers and different optimizer configs
     print 'Compiling model...'
     model.compile(loss='binary_crossentropy',
-                  optimizer='rmsprop',  # TODO: Use rmsprop
+                  optimizer='rmsprop',
                   metrics=['accuracy'])
 
     # initialize callbacks

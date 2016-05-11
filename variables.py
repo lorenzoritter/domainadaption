@@ -16,8 +16,8 @@ NB_EPOCHS = 1000        # number of training epochs of the neural network
 BATCH_SIZE = 32         # batch size during training of the neural network
 LSTM_OUTPUT_SIZE = 50   # number of output neurons of the LSTM
 LSTM_DROPOUT_W = 0.5    # dropout fraction at the input nodes of the LSTM
-LSTM_DROPOUT_U = 0.1    # dropout fraction at the recurrent connections of the LSTM
-DROPOUT = 0.5           # dropout fraction at the dropout layer
+LSTM_DROPOUT_U = 0.3    # dropout fraction at the recurrent connections of the LSTM
+DROPOUT = 0.8           # dropout fraction at the dropout layer
 PATIENCE = 20           # patience for early stopping: number of worse epochs before stopping training
 
 os.environ['EMBEDDING_DIM'] = str(EMBEDDING_DIM)
