@@ -12,7 +12,8 @@ import numpy as np
 import cPickle as pkl
 import variables
 
-categories = ['books', 'dvd', 'electronics', 'kitchen_&_housewares']
+#categories = ['books', 'dvd', 'electronics', 'kitchen_&_housewares', 'all']
+categories = ['all']
 sentiments = ['positive', 'negative']
 
 filepath = '/home/lorenzo/PycharmProjects/domainadaption/sorted_data_acl/'
