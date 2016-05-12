@@ -62,7 +62,7 @@ for category in categories:
                         review_text = review.review_text.string
                         review_text = helper.clean(review_text) # remove newlines, quotation marks, unicode
                         review_text = review_tokenizer.cleanOnereview(review_text, removesinglewords=False) # tokenize into a list of sentences
-                        review_text = " ".join(review_text) # join with whitespaces
+                        review_text = " <eos> ".join(review_text) # join with <eos> tags
                         # TODO: evaluate sentiment classification performance when using <eos> tag
 
                         if include_title:

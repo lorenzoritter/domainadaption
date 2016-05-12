@@ -34,12 +34,16 @@ def read_input(filename, w2v_dict, max_length, embedding_dim):
                 # if the maximum length of words is reached, break
                 if wordindex >= max_length:
                     break
-                try:
-                    embedded_line[wordindex] = w2v_dict[word]
-                    wordindex += 1
-                # if a key error happens, pass to next word (maybe consider a special character for unknown words)
-                except:
-                    pass
+                # replace <eos> tag with ones
+                if word == '<eos>':
+                    embedded_line[wordindex] = np.ones(embedding_dim)
+                else:
+                    try:
+                        embedded_line[wordindex] = w2v_dict[word]
+                    # if a key error happens (word not in vocabulary), pad with zeros
+                    except KeyError:
+                        embedded_line[wordindex] = np.zeros(embedding_dim)
+                wordindex += 1
             #embedded_file[lineindex] = np.array([word2vec_model[word] for word in review.split()])
             #lineindex += 1
             embedded_file.append(embedded_line)
