@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-'''sentimentclassification.py
+'''sentiment_classification.py
 
 Train a LSTM on the IMDB sentiment classification task.
 
@@ -70,8 +70,8 @@ patience = variables.PATIENCE
 
 starttime = datetime.now()
 
-categories = ['books', 'dvd', 'electronics', 'kitchen_&_housewares', 'all']
-#categories = ['books']
+#categories = ['books', 'dvd', 'electronics', 'kitchen_&_housewares', 'all']
+categories = ['books']
 #sentiments = ['positive', 'negative']
 
 filepath = '/home/lorenzo/PycharmProjects/domainadaption/sorted_data_acl/'
