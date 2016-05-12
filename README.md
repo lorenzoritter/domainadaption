@@ -45,11 +45,11 @@ Data is available [here](https://www.cs.jhu.edu/~mdredze/datasets/sentiment/inde
 ##### 2.1. Run *preprocess_dataset.py*<br>
   This will create a *reviews_positive.txt*, *ratings_positive.txt*, *reviews_negative.txt* and *ratings_revative.txt* files in each category folder. The files will contain the respective reviews and ratings with one review/rating per line. 
 
-##### 2.2. Run *embed_reviews.py*<br>
-  This will transfrom the text reviews into embedded reviews by converting each word into a vector using the dictionaries from previous steps. The resulting matrices will be stores in *reviews_positive.npy* and *reviews_negative.npy*.
+##### 2.2. Run *merge_preprocessed_reviews.py*<br>
+  This will merge the preprocessed reviews from all four categories into the all/ folder.
 
-##### 2.3. Run *merge_embedded_reviews.py*<br>
-  This will merge the embedded reviews from all four categories into the all/ folder.
+##### 2.3. Run *embed_reviews.py*<br>
+  This will transfrom the text reviews into embedded reviews by converting each word into a vector using the dictionaries from previous steps. The resulting matrices will be stores in *reviews_positive.npy* and *reviews_negative.npy*.
 
 ### 3. Classify Sentiments
 ##### 3.1. Run *sentiment_classification.py*<br>
