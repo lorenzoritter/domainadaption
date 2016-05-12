@@ -23,7 +23,6 @@ for sentiment in sentiments:
     for category in categories:
         print '\tcategory: ' + category
         file = np.load(filepath + category + '/reviews_' + sentiment + '.npy')
-        # TODO: check why electronics/reviews_nevative.npy has only 566 entries
 
         if flag==0:
             outfile = file
