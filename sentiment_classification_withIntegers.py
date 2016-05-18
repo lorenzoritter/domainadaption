@@ -147,12 +147,12 @@ for category in categories:
     print 'Saving history...'
     historyfile = pd.DataFrame(data=np.transpose([history.loss, history.acc, history.val_loss, history.val_acc]),
                                columns=['loss', 'acc', 'val_loss', 'val_acc'])
-    historyfile.to_csv(filepath + category + '/keras_history2.csv', index=False)
+    historyfile.to_csv(filepath + category + '/keras_history.csv', index=False)
 
     print 'Saving model...'
     json_string = model.to_json()
-    open(filepath + category + '/keras_model_architecture2.json', 'w').write(json_string)
-    model.save_weights(filepath + category + '/keras_model_weights2.h5', overwrite=True)
+    open(filepath + category + '/keras_model_architecture.json', 'w').write(json_string)
+    model.save_weights(filepath + category + '/keras_model_weights.h5', overwrite=True)
 
     endtime = datetime.now()
     print 'Runtime: %s' %(endtime - starttime)
