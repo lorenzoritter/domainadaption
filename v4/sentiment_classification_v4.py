@@ -27,6 +27,7 @@ from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Activation
 from keras.layers.recurrent import LSTM
 from keras.callbacks import Callback, EarlyStopping
+from keras.optimizers import RMSprop
 from datetime import datetime
 import os
 import variables_v4 as variables
@@ -47,8 +48,8 @@ class TrainHistory(Callback):
         self.val_acc.append(logs.get('val_acc'))
 
 
-def train_prior(category):
-    print 'Train prior for the category: %s' % category
+def train_prior():
+    print 'Train prior...'
 
     nb_epochs = variables.NB_EPOCHS_PRIOR
     batch_size = variables.BATCH_SIZE
@@ -63,6 +64,7 @@ def train_prior(category):
     filepath = variables.DATAPATH
 
     print 'Loading data...'
+    flag = 0
     for category in variables.CATEGORIES:
         print '\tcategory: %s' % category
 
@@ -136,7 +138,7 @@ def train_prior(category):
 
     print 'Compiling model...'
     model.compile(loss='binary_crossentropy',
-                  optimizer='rmsprop',
+                  optimizer=RMSprop(epsilon=1e-8), #'rmsprop', TODO: update keras and remove this line (1e-8 is default in new version)
                   metrics=['accuracy'])
 
     history = TrainHistory()  # initialize callbacks
@@ -157,15 +159,19 @@ def train_prior(category):
     print '\tTest score: %f' % score
     print '\tTest accuracy: %f' % acc
 
+    savepath = filepath + 'all/v4/keras_' + setting
+    if not os.path.exists(savepath):
+        os.makedirs(savepath)
+
     print 'Saving history...'
     historyfile = pd.DataFrame(data=np.transpose([history.loss, history.acc, history.val_loss, history.val_acc]),
                                columns=['loss', 'acc', 'val_loss', 'val_acc'])
-    historyfile.to_csv(filepath + category + '/v4/prior_keras_history_traintestsplit_shuffled.csv', index=False)
+    historyfile.to_csv(savepath + '/keras_history.csv', index=False)
 
     print 'Saving model...'
     json_string = model.to_json()
-    open(filepath + category + '/v4/prior_keras_model_architecture_traintestsplit_shuffled.json', 'w').write(json_string)
-    model.save_weights(filepath + category + '/v4/prior_keras_model_weights_traintestsplit_shuffled.h5', overwrite=True)
+    open(savepath + '/keras_model_architecture.json', 'w').write(json_string)
+    model.save_weights(savepath + '/keras_model_weights.h5', overwrite=True)
 
     del model  # delete model to be sure that to omit overfitting
 
@@ -205,20 +211,6 @@ def train_posterior(category):
     ratings_train = ratings_train.reshape(len(reviews_train), 1)
     ratings_test = ratings_test.reshape(len(reviews_test), 1)
 
-    # TODO: maybe omit another shuffling
-    '''
-    seed = 1234
-    np.random.seed(seed)
-    np.random.shuffle(reviews_train)
-    np.random.seed(seed)
-    np.random.shuffle(reviews_test)
-    np.random.seed(seed)
-    np.random.shuffle(ratings_train)
-    np.random.seed(seed)
-    np.random.shuffle(ratings_test)
-    '''
-
-    # test data will be used for validation
     X_train = reviews_train
     X_test = reviews_test
     y_train = ratings_train
@@ -253,7 +245,7 @@ def train_posterior(category):
 
     print 'Compiling model...'
     model.compile(loss='binary_crossentropy',
-                  optimizer='rmsprop',
+                  optimizer=RMSprop(lr=1e-6, epsilon=1e-8), #'rmsprop',
                   metrics=['accuracy'])
 
     history = TrainHistory()  # initialize callbacks
@@ -274,18 +266,19 @@ def train_posterior(category):
     print '\tTest score: %f' % score
     print '\tTest accuracy: %f' % acc
 
-    if not os.path.exists(filepath + category + '/v4/keras_' + setting):
-        os.makedirs(filepath + category + '/v4/keras_' + setting)
+    savepath = filepath + category + '/v4/keras_' + setting
+    if not os.path.exists(savepath):
+        os.makedirs(savepath)
 
     print 'Saving history...'
     historyfile = pd.DataFrame(data=np.transpose([history.loss, history.acc, history.val_loss, history.val_acc]),
                                columns=['loss', 'acc', 'val_loss', 'val_acc'])
-    historyfile.to_csv(filepath + category + '/v4/keras_' + setting + '/keras_history.csv', index=False)
+    historyfile.to_csv(savepath + '/keras_history.csv', index=False)
 
     print 'Saving model...'
     json_string = model.to_json()
-    open(filepath + category + '/v4/keras_' + setting + '/keras_model_architecture.json', 'w').write(json_string)
-    model.save_weights(filepath + category + '/v4/keras_' + setting + '/keras_model_weights.h5', overwrite=True)
+    open(savepath + '/keras_model_architecture.json', 'w').write(json_string)
+    model.save_weights(savepath + '/keras_model_weights.h5', overwrite=True)
 
     del model  # delete model to be sure that to omit overfitting
 
@@ -296,9 +289,9 @@ def train_posterior(category):
 if __name__ == '__main__':
     global_starttime = datetime.now()
 
-    setting = 'globalEmbeddings_traintestsplit_shuffled'
+    setting = 'globalEmbeddings_traintestsplit_shuffled_v2'
 
-    #train_prior()
+    train_prior()
 
     for category in variables.CATEGORIES:
         train_posterior(category)
