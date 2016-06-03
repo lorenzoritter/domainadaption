@@ -13,13 +13,13 @@ from keras.models import model_from_json
 import variables_v4 as variables
 
 
-def evaluate_prior():
+def evaluate_prior(setting):
     print '\nEvaluating prior...'
     datapath = variables.DATAPATH
     categories = variables.CATEGORIES
     batch_size = variables.BATCH_SIZE
 
-    modelpath = datapath + 'all/v4/keras_globalEmbeddings_traintestsplit_shuffled/'
+    modelpath = datapath + 'all/v4/keras_' + setting + '/'
 
     model = model_from_json(open(modelpath + 'keras_model_architecture.json').read())
     model.load_weights(modelpath + 'keras_model_weights.h5')
@@ -61,14 +61,14 @@ def evaluate_prior():
         print "\ttest loss: %0.4f" % score
         print "\ttest accuracy: %0.4f" % acc
 
-def evaluate_posterior():
+def evaluate_posterior(setting):
     print '\nEvaluating posterior...'
     datapath = variables.DATAPATH
     categories = variables.CATEGORIES
     batch_size = variables.BATCH_SIZE
 
     for category in categories:
-        modelpath = datapath + category + '/v4/keras_globalEmbeddings_traintestsplit_shuffled/'
+        modelpath = datapath + category + '/v4/keras_' + setting + '/'
 
         model = model_from_json(open(modelpath + 'keras_model_architecture.json').read())
         model.load_weights(modelpath + 'keras_model_weights.h5')
@@ -111,5 +111,7 @@ def evaluate_posterior():
         print "\ttest accuracy: %0.4f" % acc
 
 if __name__ == '__main__':
-    evaluate_prior()
-    evaluate_posterior()
+    setting = 'globalEmbeddings_traintestsplit_shuffled_v2'
+
+    evaluate_prior(setting)
+    evaluate_posterior(setting)
