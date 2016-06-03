@@ -111,7 +111,7 @@ def evaluate_posterior(setting):
         print "\ttest accuracy: %0.4f" % acc
 
 if __name__ == '__main__':
-    setting = 'globalEmbeddings_traintestsplit_shuffled_v2'
+    setting = 'globalEmbeddings_traintestsplit_shuffled_v3'
 
     evaluate_prior(setting)
     evaluate_posterior(setting)

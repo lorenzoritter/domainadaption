@@ -8,18 +8,6 @@ file description here
 __author__ = "Lorenzo von Ritter"
 __date__ = "2016-06-02"
 
-#!/usr/bin/env python
-
-'''sentiment_classification_v3_shuffled.py
-
-file description here
-'''
-
-
-# hierarchical DL
-# http://keras.io/models/about-keras-models/
-# http://keras.io/getting-started/sequential-model-guide/
-# model.load_weights('weight_file.h5')
 
 import numpy as np
 import pandas as pd
@@ -138,7 +126,7 @@ def train_prior():
 
     print 'Compiling model...'
     model.compile(loss='binary_crossentropy',
-                  optimizer=RMSprop(epsilon=1e-8), #'rmsprop', TODO: update keras and remove this line (1e-8 is default in new version)
+                  optimizer='rmsprop',
                   metrics=['accuracy'])
 
     history = TrainHistory()  # initialize callbacks
@@ -245,7 +233,7 @@ def train_posterior(category):
 
     print 'Compiling model...'
     model.compile(loss='binary_crossentropy',
-                  optimizer=RMSprop(lr=1e-6, epsilon=1e-8), #'rmsprop',
+                  optimizer='rmsprop', # RMSprop(lr=1e-6), #TODO: decrease learning rate (default is 1e-3)
                   metrics=['accuracy'])
 
     history = TrainHistory()  # initialize callbacks
@@ -289,7 +277,7 @@ def train_posterior(category):
 if __name__ == '__main__':
     global_starttime = datetime.now()
 
-    setting = 'globalEmbeddings_traintestsplit_shuffled_v2'
+    setting = 'globalEmbeddings_traintestsplit_shuffled_v3'
 
     train_prior()
 
