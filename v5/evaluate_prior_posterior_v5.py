@@ -9,15 +9,19 @@ __author__ = "Lorenzo von Ritter"
 __date__ = "2016-06-02"
 
 import numpy as np
+import pandas as pd
 from keras.models import model_from_json
 import variables_v5 as variables
 
 
-def evaluate_prior(setting):
-    print '\nEvaluating prior...'
+def evaluate_prior(setting, verbose=1):
+    print 'Evaluating prior...'
     datapath = variables.DATAPATH
     categories = variables.CATEGORIES
     batch_size = variables.BATCH_SIZE
+
+    # create table for results
+    results = pd.DataFrame(index=['train_loss', 'train_acc', 'test_loss', 'test_acc'], columns=categories)
 
     # load prior. since it is a global model, it only need to be loaded once
     modelpath = datapath + 'all/v5/keras_' + setting + '/'
@@ -28,7 +32,8 @@ def evaluate_prior(setting):
     model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
     for category in categories:
-        print '\ncategory: %s' % category
+        if verbose:
+            print 'category: %s' % category
 
         # read train and test reviews (words will be represented as integers)
         current_reviews_train = np.load(datapath + category + '/reviews_shuffled_embeddedIDa.npy')
@@ -60,24 +65,36 @@ def evaluate_prior(setting):
         del current_reviews_train, current_reviews_test
         del current_ratings_train, current_ratings_test
 
-        print 'Evaluate training data...'
+        if verbose:
+            print 'Evaluate training data...'
         score, acc = model.evaluate(X_train, y_train, batch_size=batch_size, verbose=0)
-        print "\ttrain loss: %0.4f" % score
-        print "\ttrain accuracy: %0.4f" % acc
+        results[category]['train_loss'] = '{0:.4f}'.format(score)
+        results[category]['train_acc'] = '{0:.4f}'.format(acc)
+        # print "\ttrain loss: %0.4f" % score
+        # print "\ttrain accuracy: %0.4f" % acc
 
-        print 'Evaluate test data...'
+        if verbose:
+            print 'Evaluate test data...'
         score, acc = model.evaluate(X_test, y_test, batch_size=batch_size, verbose=0)
-        print "\ttest loss: %0.4f" % score
-        print "\ttest accuracy: %0.4f" % acc
+        results[category]['test_loss'] = '{0:.4f}'.format(score)
+        results[category]['test_acc'] = '{0:.4f}'.format(acc)
+        # print "\ttest loss: %0.4f" % score
+        # print "\ttest accuracy: %0.4f" % acc
 
-def evaluate_posterior(setting):
-    print '\nEvaluating posterior...'
+    return results
+
+def evaluate_posterior(setting, verbose=1):
+    print 'Evaluating posterior...'
     datapath = variables.DATAPATH
     categories = variables.CATEGORIES
     batch_size = variables.BATCH_SIZE
 
+    # create table for results
+    results = pd.DataFrame(index=['train_loss', 'train_acc', 'test_loss', 'test_acc'], columns=categories)
+
     for category in categories:
-        print '\ncategory: %s' % category
+        if verbose:
+            print '\ncategory: %s' % category
         # load posterior. each category has a different posterior
         modelpath = datapath + category + '/v5/keras_' + setting + '/'
 
@@ -114,15 +131,23 @@ def evaluate_posterior(setting):
         del reviews_train, reviews_test
         del ratings_train, ratings_test
 
-        print 'Evaluate training data...'
+        if verbose:
+            print 'Evaluate training data...'
         score, acc = model.evaluate(X_train, y_train, batch_size=batch_size, verbose=0)
-        print "\ttrain loss: %0.4f" % score
-        print "\ttrain accuracy: %0.4f" % acc
+        results[category]['train_loss'] = '{0:.4f}'.format(score)
+        results[category]['train_acc'] = '{0:.4f}'.format(acc)
+        # print "\ttrain loss: %0.4f" % score
+        # print "\ttrain accuracy: %0.4f" % acc
 
-        print 'Evaluate test data...'
+        if verbose:
+            print 'Evaluate test data...'
         score, acc = model.evaluate(X_test, y_test, batch_size=batch_size, verbose=0)
-        print "\ttest loss: %0.4f" % score
-        print "\ttest accuracy: %0.4f" % acc
+        results[category]['test_loss'] = '{0:.4f}'.format(score)
+        results[category]['test_acc'] = '{0:.4f}'.format(acc)
+        # print "\ttest loss: %0.4f" % score
+        # print "\ttest accuracy: %0.4f" % acc
+
+    return results
 
 if __name__ == '__main__':
     setting_prior = ''
